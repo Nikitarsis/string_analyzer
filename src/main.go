@@ -15,7 +15,7 @@ const (
 	UNKNOWN_O                = "unknown"
 )
 
-type MyString struct {
+type AnalyzedString struct {
 	innerString  string
 	sizeOfString int
 	numOfString  uint32
@@ -25,8 +25,8 @@ type MyString struct {
 }
 
 func GetType(s *string) TypeOfString {
-	CLASS := regexp.MustCompile(`[ѢѣІіѲѳѴѵ]|([ВКСфкцнгшщзхфвпрлджчсмтб]ъ[ ,.;:?!-"'])`)
-	REFORM := regexp.MustCompile(`([иИ][яеёоыеиюэ])|([ВКСфкцнгшщзхфвпрлджчсмтб][ ,.;:?!-"'])`)
+	CLASS := regexp.MustCompile(`[ѢѣІіѲѳѴѵ]|([ВКСфкцнгшщзхфвпрлджчсмтб]ъ[ ,.;:?!\-"'])`)
+	REFORM := regexp.MustCompile(`([иИ][яеёоыеиюэ])|([ВКСфкцнгшщзхфвпрлджчсмтб][ ,.;:?!\-"'])`)
 	TRASH := regexp.MustCompile(`.{,5}`)
 	if TRASH.MatchString(*s) {
 		return TRASH_O
@@ -45,12 +45,12 @@ func GetType(s *string) TypeOfString {
 	return UNKNOWN_O
 }
 
-func CreateMyString(numOfString uint32, s *string) MyString {
+func CreateAnalyzedString(numOfString uint32, s *string) AnalyzedString {
 	symbolMap := getMap([]rune(*s))
 	sizeOfString := len(*s)
 	hasYo := checkYo(s)
 	typeOfStr := GetType(s)
-	return MyString{*s, sizeOfString, numOfString, symbolMap, typeOfStr, hasYo}
+	return AnalyzedString{*s, sizeOfString, numOfString, symbolMap, typeOfStr, hasYo}
 }
 
 func getMap(slice []rune) map[rune]uint {
