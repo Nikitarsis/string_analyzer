@@ -24,15 +24,15 @@ type MyString struct {
 	hasYo        bool
 }
 
-func GetType(s string) TypeOfString {
+func GetType(s *string) TypeOfString {
 	CLASS := regexp.MustCompile(`[ѢѣІіѲѳѴѵ]|([ВКСфкцнгшщзхфвпрлджчсмтб]ъ[ ,.;:?!-"'])`)
 	REFORM := regexp.MustCompile(`([иИ][яеёоыеиюэ])|([ВКСфкцнгшщзхфвпрлджчсмтб][ ,.;:?!-"'])`)
 	TRASH := regexp.MustCompile(`.{,5}`)
-	if TRASH.MatchString(s) {
+	if TRASH.MatchString(*s) {
 		return TRASH_O
 	}
-	isClass := CLASS.MatchString(s)
-	isReform := REFORM.MatchString(s)
+	isClass := CLASS.MatchString(*s)
+	isReform := REFORM.MatchString(*s)
 	if isReform && isClass {
 		return UNKNOWN_O
 	}
@@ -49,7 +49,8 @@ func CreateMyString(numOfString uint32, s *string) MyString {
 	symbolMap := getMap([]rune(*s))
 	sizeOfString := len(*s)
 	hasYo := checkYo(s)
-	return MyString{*s, sizeOfString, numOfString, symbolMap, UNKNOWN_O, hasYo}
+	typeOfStr := GetType(s)
+	return MyString{*s, sizeOfString, numOfString, symbolMap, typeOfStr, hasYo}
 }
 
 func getMap(slice []rune) map[rune]uint {
@@ -59,7 +60,7 @@ func getMap(slice []rune) map[rune]uint {
 		if ok {
 			ret[symbol] = 0
 		} */
-		ret[symbol] += 1
+		ret[symbol]++
 	}
 	return ret
 }
