@@ -91,66 +91,6 @@ func loadFromFile(fpath *string) []string {
 	}
 }
 
-type ArgsParser struct {
-	pseudonyms     map[string]string
-	possibleArgs   map[string]uint
-	functionMapper map[string]func([]string)
-}
-
-func ConstructParser(entities ...ArgEntity) ArgsParser {
-
-}
-
-type ArgEntity struct {
-	ArgName            string
-	AssociatedFunction func([]string)
-	Pseudonyms         []string
-}
-
-func ConstructEntity(function func([]string), name string, pseudonyms ...string) ArgEntity {
-	return ArgEntity{name, function, pseudonyms}
-}
-
-func parseArgs(args []string) map[string][]string {
-	result := make(map[string][]string)
-	var currentKey string
-
-	for _, arg := range args {
-		if strings.HasPrefix(arg, "--") {
-			currentKey = strings.TrimLeft(arg, "--")
-			if currentKey == "" {
-				panic("Invalid argument key")
-			}
-			_, exists := result[currentKey]
-			if exists {
-				panic(fmt.Sprintf("Duplicate argument key: %s", currentKey))
-			}
-
-			result[currentKey] = []string{}
-			continue
-		}
-		if strings.HasPrefix(arg, "-") {
-			currentKey = strings.TrimLeft(arg, "-")
-			if currentKey == "" {
-				panic("Invalid argument key")
-			}
-
-			if _, exists := result[currentKey]; exists {
-				panic(fmt.Sprintf("Duplicate argument key: %s", currentKey))
-			}
-
-			result[currentKey] = []string{}
-			continue
-		}
-		if currentKey == "" {
-			panic(fmt.Sprintf("Value provided without a key: %s", arg))
-		}
-		result[currentKey] = append(result[currentKey], arg)
-	}
-
-	return result
-}
-
 func main() {
 	args := os.Args
 	message := "Hello world"
