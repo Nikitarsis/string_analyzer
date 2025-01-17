@@ -68,6 +68,14 @@ func (ap ArgsParser) Parse(argsMap map[string][]string) error {
 	return nil
 }
 
+func (ap ArgsParser) ParseArgs(args ...string) error {
+	argsMap, error := DivideArgs(args...)
+	if error != nil {
+		return error
+	}
+	return ap.Parse(argsMap)
+}
+
 func constructParser(entities ...argEntity) (*ArgsParser, error) {
 	var ret = newParserDefault()
 	for _, entity := range entities {
