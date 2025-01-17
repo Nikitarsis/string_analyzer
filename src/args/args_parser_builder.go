@@ -84,6 +84,6 @@ func (apb *ArgsParserBuilder) AddElementBetween(
 	return apb.AddElement(function, checker, name, pseudonyms...)
 }
 
-func (apb ArgsParserBuilder) Construct() ArgsParser {
+func (apb ArgsParserBuilder) Construct() (*ArgsParser, error) {
 	return constructParser(apb.entities...)
 }
