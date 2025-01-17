@@ -10,8 +10,8 @@ type ArgsParser struct {
 	functionMapper       map[string]func(...string)
 }
 
-func newParserDefault() ArgsParser {
-	return ArgsParser{make(map[string]string), make(map[string]func(uint) bool), make(map[string]func(...string))}
+func newParserDefault() *ArgsParser {
+	return &ArgsParser{make(map[string]string), make(map[string]func(uint) bool), make(map[string]func(...string))}
 }
 
 func (ap ArgsParser) checkEntity(entity argEntity) bool {
@@ -32,7 +32,7 @@ func (ap ArgsParser) checkEntity(entity argEntity) bool {
 	return true
 }
 
-func (ap *ArgsParser) AddEntity(entity argEntity) error {
+func (ap *ArgsParser) addEntity(entity argEntity) error {
 	if !ap.checkEntity(entity) {
 		return errors.New("Entity collision")
 	}
@@ -47,10 +47,13 @@ func (ap *ArgsParser) AddEntity(entity argEntity) error {
 	return nil
 }
 
-func constructParser(entities ...argEntity) ArgsParser {
+func constructParser(entities ...argEntity) (*ArgsParser, error) {
 	var ret = newParserDefault()
 	for _, entity := range entities {
-		ret.AddEntity(entity)
+		err := ret.addEntity(entity)
+		if err != nil {
+			return nil, err
+		}
 	}
-	return ret
+	return ret, nil
 }
