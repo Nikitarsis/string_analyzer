@@ -10,6 +10,10 @@ type ArgsParser struct {
 	functionMapper       map[string]func([]string)
 }
 
+func newParserDefault() ArgsParser {
+	return ArgsParser{make(map[string]string), make(map[string]func(uint) bool), make(map[string]func([]string))}
+}
+
 func (ap ArgsParser) checkEntity(entity argEntity) bool {
 	for _, pseudonym := range entity.Pseudonyms {
 		if _, check := ap.varnames[pseudonym]; check {
@@ -43,8 +47,8 @@ func (ap *ArgsParser) AddEntity(entity argEntity) error {
 	return nil
 }
 
-func ConstructParser(entities ...argEntity) ArgsParser {
-	var ret = ArgsParser{make(map[string]string), make(map[string]func(uint) bool), make(map[string]func([]string))}
+func constructParser(entities ...argEntity) ArgsParser {
+	var ret = newParserDefault()
 	for _, entity := range entities {
 		ret.AddEntity(entity)
 	}
