@@ -1,65 +1,47 @@
 package stringanalyzer
 
-import (
-	"regexp"
-	"strings"
-)
-
-type TypeOfString string
-
-const (
-	CLASSICAL_O TypeOfString = "class"
-	REFORMED_O               = "reformed"
-	TRASH_O                  = "trash"
-	UNKNOWN_O                = "unknown"
-)
-
 type AnalyzedString struct {
-	innerString  string
+	innerString  *string
 	sizeOfString int
-	numOfString  uint32
 	symbolMap    map[rune]uint
-	stringType   TypeOfString
-	hasYo        bool
+	flagMap      map[string]bool
 }
 
-func GetType(s *string) TypeOfString {
-	CLASS := regexp.MustCompile(`[ѢѣІіѲѳѴѵ]|([ВКСфкцнгшщзхфвпрлджчсмтб]ъ[ ,.;:?!\-"'])`)
-	REFORM := regexp.MustCompile(`([иИ][яеёоыеиюэ])|([ВКСфкцнгшщзхфвпрлджчсмтб][ ,.;:?!\-"'])`)
-	TRASH := regexp.MustCompile(`.{,5}`)
-	if TRASH.MatchString(*s) {
-		return TRASH_O
-	}
-	isClass := CLASS.MatchString(*s)
-	isReform := REFORM.MatchString(*s)
-	if isReform && isClass {
-		return UNKNOWN_O
-	}
-	if isReform {
-		return REFORMED_O
-	}
-	if isClass {
-		return CLASSICAL_O
-	}
-	return UNKNOWN_O
+func (as AnalyzedString) GetString() *string {
+	return as.innerString
 }
 
-func CreateAnalyzedString(numOfString uint32, s *string) AnalyzedString {
-	symbolMap := getMap([]rune(*s))
-	sizeOfString := len(*s)
-	hasYo := checkYo(s)
-	typeOfStr := GetType(s)
-	return AnalyzedString{*s, sizeOfString, numOfString, symbolMap, typeOfStr, hasYo}
+func (as AnalyzedString) GetSize() int {
+	return as.sizeOfString
 }
 
-func getMap(slice []rune) map[rune]uint {
+func (as AnalyzedString) GetSymbolMap() *map[rune]uint {
+	return &as.symbolMap
+}
+
+func (as AnalyzedString) GetFlagMap() *map[string]bool {
+	return &as.flagMap
+}
+
+func constructAnalyzedString(
+	str *string,
+	flags ...struct {
+		key string
+		b   bool
+	}) AnalyzedString {
+
+	flagMap := make(map[string]bool)
+	for _, flag := range flags {
+		flagMap[flag.key] = flag.b
+	}
+	symbolMap := constructSymMap([]rune(*str))
+	return AnalyzedString{str, len(*str), symbolMap, flagMap}
+}
+
+func constructSymMap(slice []rune) map[rune]uint {
 	ret := map[rune]uint{}
 	for _, symbol := range slice {
 		ret[symbol]++
 	}
 	return ret
-}
-
-func checkYo(s *string) bool {
-	return strings.ContainsAny(*s, "ёЁ")
 }
