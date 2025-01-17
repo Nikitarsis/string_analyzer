@@ -10,7 +10,7 @@ type ArgsParser struct {
 	functionMapper       map[string]func([]string)
 }
 
-func (ap ArgsParser) checkEntity(entity ArgEntity) bool {
+func (ap ArgsParser) checkEntity(entity argEntity) bool {
 	for _, pseudonym := range entity.Pseudonyms {
 		if _, check := ap.varnames[pseudonym]; check {
 			return false
@@ -28,7 +28,7 @@ func (ap ArgsParser) checkEntity(entity ArgEntity) bool {
 	return true
 }
 
-func (ap *ArgsParser) AddEntity(entity ArgEntity) error {
+func (ap *ArgsParser) AddEntity(entity argEntity) error {
 	if !ap.checkEntity(entity) {
 		return errors.New("Entity collision")
 	}
@@ -43,7 +43,7 @@ func (ap *ArgsParser) AddEntity(entity ArgEntity) error {
 	return nil
 }
 
-func ConstructParser(entities ...ArgEntity) ArgsParser {
+func ConstructParser(entities ...argEntity) ArgsParser {
 	var ret = ArgsParser{make(map[string]string), make(map[string]func(uint) bool), make(map[string]func([]string))}
 	for _, entity := range entities {
 		ret.AddEntity(entity)
