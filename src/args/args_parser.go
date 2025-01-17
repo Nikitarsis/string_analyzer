@@ -9,10 +9,11 @@ type ArgsParser struct {
 	varnames             map[string]string
 	possibleNArgsChecker map[string]func(uint) bool
 	functionMapper       map[string]func(...string)
+	checklist            map[string]bool
 }
 
 func newParserDefault() *ArgsParser {
-	return &ArgsParser{make(map[string]string), make(map[string]func(uint) bool), make(map[string]func(...string))}
+	return &ArgsParser{make(map[string]string), make(map[string]func(uint) bool), make(map[string]func(...string)), make(map[string]bool)}
 }
 
 func (ap ArgsParser) checkEntity(entity argEntity) (bool, string) {
@@ -28,7 +29,10 @@ func (ap ArgsParser) checkEntity(entity argEntity) (bool, string) {
 		return false, fmt.Sprintf("Critical error. Keyname %s already refer to check function, but somehow doesn't exist.", entity.ArgName)
 	}
 	if _, check := ap.functionMapper[entity.ArgName]; check {
-		return false, fmt.Sprintf("Critical error. Keuname %s already refer to map function, but somehow doesn't exist and don't have check function", entity.ArgName)
+		return false, fmt.Sprintf("Critical error. Keyname %s already refer to map function, but somehow doesn't exist and don't have check function", entity.ArgName)
+	}
+	if _, check := ap.checklist[entity.ArgName]; check {
+		return false, fmt.Sprintf("Critical error. Keyname %s already contains in checklist, but somehow doesn't exist", entity.ArgName)
 	}
 	return true, "Ok"
 }
@@ -44,11 +48,18 @@ func (ap *ArgsParser) addEntity(entity argEntity) error {
 	for _, element := range entity.Pseudonyms {
 		ap.varnames[element] = entity.ArgName
 	}
+	ap.checklist[entity.ArgName] = entity.IsNecessary
 
 	return nil
 }
 
 func (ap ArgsParser) Parse(argsMap map[string][]string) error {
+	for key, isNecessary := range ap.checklist {
+		_, check := argsMap[key]
+		if isNecessary && !check {
+			return errors.New(fmt.Sprintf("Should be key %s", key))
+		}
+	}
 	for key, values := range argsMap {
 		pseudonym, check := ap.varnames[key]
 		if !check {

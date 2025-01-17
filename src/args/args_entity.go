@@ -5,12 +5,13 @@ type argEntity struct {
 	AssociatedFunction func(...string)
 	Pseudonyms         []string
 	NargsChecker       func(uint) bool
+	IsNecessarily      bool
 }
 
-func constructEntityChecker(function func(...string), name string, nargsChecker func(uint) bool, pseudonyms ...string) argEntity {
-	return argEntity{name, function, pseudonyms, nargsChecker}
+func constructEntityChecker(function func(...string), name string, nargsChecker func(uint) bool, isNec bool, pseudonyms ...string) argEntity {
+	return argEntity{name, function, pseudonyms, nargsChecker, isNec}
 }
 
-func constructEntity(function func(...string), name string, nargs uint, pseudonyms ...string) argEntity {
-	return constructEntityChecker(function, name, func(x uint) bool { return x == nargs }, pseudonyms...)
+func constructEntity(function func(...string), name string, nargs uint, isNec bool, pseudonyms ...string) argEntity {
+	return constructEntityChecker(function, name, func(x uint) bool { return x == nargs }, isNec, pseudonyms...)
 }
