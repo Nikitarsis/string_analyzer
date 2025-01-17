@@ -2,6 +2,7 @@ package args
 
 import (
 	"errors"
+	"fmt"
 )
 
 type ArgsParser struct {
@@ -14,27 +15,27 @@ func newParserDefault() *ArgsParser {
 	return &ArgsParser{make(map[string]string), make(map[string]func(uint) bool), make(map[string]func(...string))}
 }
 
-func (ap ArgsParser) checkEntity(entity argEntity) bool {
+func (ap ArgsParser) checkEntity(entity argEntity) (bool, string) {
 	for _, pseudonym := range entity.Pseudonyms {
-		if _, check := ap.varnames[pseudonym]; check {
-			return false
+		if refer, check := ap.varnames[pseudonym]; check {
+			return false, fmt.Sprintf("Pseudonym %s already exists and refer to %s", pseudonym, refer)
 		}
 	}
 	if _, check := ap.varnames[entity.ArgName]; check {
-		return false
+		return false, fmt.Sprintf("Keyname %s already exist", entity.ArgName)
 	}
 	if _, check := ap.possibleNArgsChecker[entity.ArgName]; check {
-		return false
+		return false, fmt.Sprintf("Critical error. Keyname %s already refer to check function, but somehow doesn't exist.", entity.ArgName)
 	}
 	if _, check := ap.functionMapper[entity.ArgName]; check {
-		return false
+		return false, fmt.Sprintf("Critical error. Keuname %s already refer to map function, but somehow doesn't exist and don't have check function", entity.ArgName)
 	}
-	return true
+	return true, "Ok"
 }
 
 func (ap *ArgsParser) addEntity(entity argEntity) error {
-	if !ap.checkEntity(entity) {
-		return errors.New("Entity collision")
+	if check, msg := ap.checkEntity(entity); check {
+		return errors.New("Entity collision due to: " + msg)
 	}
 
 	ap.possibleNArgsChecker[entity.ArgName] = entity.NargsChecker
