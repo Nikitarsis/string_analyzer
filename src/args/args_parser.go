@@ -48,6 +48,26 @@ func (ap *ArgsParser) addEntity(entity argEntity) error {
 	return nil
 }
 
+func (ap ArgsParser) Parse(argsMap map[string][]string) error {
+	for key, values := range argsMap {
+		pseudonym, check := ap.varnames[key]
+		if !check {
+			return errors.New(fmt.Sprintf("Key %s doesn't exist", key))
+		}
+		checker, check := ap.possibleNArgsChecker[pseudonym]
+		if !check {
+			return errors.New(fmt.Sprintf("No checker for key %s", pseudonym))
+		}
+		function, check := ap.functionMapper[pseudonym]
+		size := uint(len(values))
+		if !checker(size) {
+			return errors.New(fmt.Sprintf("Incorrect number of arguments %s", key))
+		}
+		function(values...)
+	}
+	return nil
+}
+
 func constructParser(entities ...argEntity) (*ArgsParser, error) {
 	var ret = newParserDefault()
 	for _, entity := range entities {
