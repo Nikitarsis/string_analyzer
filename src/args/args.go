@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func DivideArgs(args []string) (map[string][]string, error) {
+func DivideArgs(args ...string) (map[string][]string, error) {
 	result := make(map[string][]string)
 	var currentKey string
 
@@ -25,16 +25,21 @@ func DivideArgs(args []string) (map[string][]string, error) {
 			continue
 		}
 		if strings.HasPrefix(arg, "-") {
-			currentKey = strings.TrimLeft(arg, "-")
-			if currentKey == "" {
+			keys := strings.Split(strings.TrimLeft(arg, "-"), "")
+			if len(keys) == 0 {
 				return nil, errors.New("Invalid argument key")
 			}
+			for _, currentKey = range keys {
+				if currentKey == "" {
+					return nil, errors.New("Invalid argument key")
+				}
 
-			if _, exists := result[currentKey]; exists {
-				return nil, errors.New(fmt.Sprintf("Duplicate argument key: %s", currentKey))
+				if _, exists := result[currentKey]; exists {
+					return nil, errors.New(fmt.Sprintf("Duplicate argument key: %s", currentKey))
+				}
+
+				result[currentKey] = []string{}
 			}
-
-			result[currentKey] = []string{}
 			continue
 		}
 		if currentKey == "" {
