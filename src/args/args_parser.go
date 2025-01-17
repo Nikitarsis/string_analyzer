@@ -7,11 +7,11 @@ import (
 type ArgsParser struct {
 	varnames             map[string]string
 	possibleNArgsChecker map[string]func(uint) bool
-	functionMapper       map[string]func([]string)
+	functionMapper       map[string]func(...string)
 }
 
 func newParserDefault() ArgsParser {
-	return ArgsParser{make(map[string]string), make(map[string]func(uint) bool), make(map[string]func([]string))}
+	return ArgsParser{make(map[string]string), make(map[string]func(uint) bool), make(map[string]func(...string))}
 }
 
 func (ap ArgsParser) checkEntity(entity argEntity) bool {
