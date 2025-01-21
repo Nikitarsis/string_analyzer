@@ -5,7 +5,7 @@ type argEntity struct {
 	AssociatedFunction func(...string)
 	Pseudonyms         []string
 	NargsChecker       func(uint) bool
-	IsNecessarily      bool
+	IsNecessary        bool
 }
 
 func constructEntityChecker(function func(...string), name string, nargsChecker func(uint) bool, isNec bool, pseudonyms ...string) argEntity {
