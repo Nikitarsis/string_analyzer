@@ -12,14 +12,15 @@ import (
 //REFORM := regexp.MustCompile(`([иИ][яеёоыеиюэ])|([ВКСфкцнгшщзхфвпрлджчсмтб][ ,.;:?!\-"'])`)
 //TRASH := regexp.MustCompile(`.{,5}`)
 
+var configSingleton Config
+
 func getParser() *args.ArgsParser {
 	builder := args.NewParserBuilder()
-	builder.AddElementAtLeast(func(s ...string) {}, 1, "inputFile", false, "i")
-	builder.AddElementAtLeast(func(s ...string) {}, 1, "outputFile", false, "o")
-	builder.AddElementAtMost(func(s ...string) {}, 0, "saveStrings", false, "s")
-	builder.AddElementAtMost(func(s ...string) {}, 0, "countCombinations", false, "c")
-	builder.AddElementAtMost(func(s ...string) {}, 0, "nopipeline", false, "n")
-	builder.AddElementAtMost(func(s ...string) {}, 0, "debug", false, "d")
+	builder.AddElementAtLeast(func(s ...string) { configSingleton.SetReadingFiles(s...) }, 1, "inputFile", false, "i")
+	builder.AddElementAtLeast(func(s ...string) { configSingleton.SetOutputFiles(s...) }, 1, "outputFile", false, "o")
+	builder.AddElementAtMost(func(s ...string) { configSingleton.SaveString() }, 0, "saveStrings", false, "s")
+	builder.AddElementAtMost(func(s ...string) { configSingleton.CountCombo() }, 0, "countCombinations", false, "c")
+	builder.AddElementAtMost(func(s ...string) { configSingleton.DoNotPipeline() }, 0, "nopipeline", false, "n")
 	ret, err := builder.Construct()
 	if err != nil {
 		panic(err)
@@ -46,8 +47,18 @@ func getStringAnalyzer(saveStr bool, countComb bool) *stringanalyzer.StringAnaly
 }
 
 func main() {
+	configSingleton = GetConfig()
 	parser := getParser()
 	parser.ParseArgs(os.Args...)
-	message := "Hello world"
-	fmt.Println(message)
+	analyzer := getStringAnalyzer(configSingleton.ShouldSaveString(), configSingleton.ShouldCountCombo())
+	analyzeFunc := func(s *string) ([]byte, bool) {
+		ret, err := analyzer.AnalyzeString(s).GetJson()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			return nil, false
+		}
+		return ret, true
+	}
+	message := "Hello World"
+	fmt.Println(analyzeFunc(&message))
 }
