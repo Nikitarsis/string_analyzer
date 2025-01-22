@@ -1,32 +1,45 @@
 package stringanalyzer
 
 type StringAnalyzer struct {
-	criteriaMapper []struct {
-		str     string
-		checker func(*string) bool
-	}
+	flags     map[string]bool
+	criteries map[string]func(*string) bool
 }
 
-func (sa StringAnalyzer) AnalyzeString(s *string) AnalyzedString {
+func (sa StringAnalyzer) AnalyzeString(s *string) IAnalyzedString {
 
-	var flags []struct {
-		key string
-		b   bool
+	checkMap := make(map[string]bool)
+	_, saveStrings := sa.flags["save_string"]
+	_, saveCombos := sa.flags["save_combinations"]
+	for name, function := range sa.criteries {
+		checkMap[name] = function(s)
 	}
-	for _, criteria := range sa.criteriaMapper {
-		flag := criteria.checker(s)
-		flags = append(flags, struct {
-			key string
-			b   bool
-		}{criteria.str, flag})
+	symbolMap, combinationMap := constructSymMap([]rune(*s))
+	minimalAS := MinimalAnalyzedString{len(*s), symbolMap, checkMap}
+	if !saveCombos && !saveStrings {
+		return &minimalAS
 	}
-	return constructAnalyzedString(s, flags...)
+	if saveCombos && !saveStrings {
+		return &AnalyzedStringWithCombinations{&minimalAS, combinationMap}
+	}
+	stringsAS := AnalyzedStringWithOriginalText{&minimalAS, s}
+	if !saveCombos && saveStrings {
+		return &stringsAS
+	}
+	return FullAnalyzedString{&stringsAS, combinationMap}
 }
 
-func getMap(slice []rune) map[rune]uint {
-	ret := map[rune]uint{}
-	for _, symbol := range slice {
-		ret[symbol]++
+func constructSymMap(slice []rune) (map[rune]uint, map[[2]rune]uint) {
+	retOne := map[rune]uint{}
+	retTwo := map[[2]rune]uint{}
+	var previousSymbol rune
+	for i, symbol := range slice {
+		retOne[symbol]++
+		if i == 0 {
+			previousSymbol = symbol
+			continue
+		}
+		retTwo[[2]rune{previousSymbol, symbol}]++
+		previousSymbol = symbol
 	}
-	return ret
+	return retOne, retTwo
 }
