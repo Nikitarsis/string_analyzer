@@ -1,56 +1,74 @@
 package stringanalyzer
 
-type AnalyzedString struct {
-	innerString    *string
-	sizeOfString   int
-	symbolMap      map[rune]uint
-	combinationMap map[[2]rune]uint
-	flagMap        map[string]bool
+import (
+	"encoding/json"
+)
+
+type MinimalAnalyzedString struct {
+	sizeOfString int
+	symbolMap    map[rune]uint
+	flagMap      map[string]bool
 }
 
-func (as AnalyzedString) GetString() *string {
-	return as.innerString
+func (mas *MinimalAnalyzedString) GetSize() int {
+	return mas.sizeOfString
 }
 
-func (as AnalyzedString) GetSize() int {
+func (mas *MinimalAnalyzedString) GetSymbolMap() map[rune]uint {
+	return mas.symbolMap
+}
+
+func (mas *MinimalAnalyzedString) GetJson() ([]byte, error) {
+	return json.Marshal(mas)
+}
+
+type AnalyzedStringWithOriginalText struct {
+	*MinimalAnalyzedString
+	innerString *string
+}
+
+func (as *AnalyzedStringWithOriginalText) GetSize() int {
 	return as.sizeOfString
 }
 
-func (as AnalyzedString) GetSymbolMap() *map[rune]uint {
-	return &as.symbolMap
+func (as *AnalyzedStringWithOriginalText) GetSymbolMap() map[rune]uint {
+	return as.symbolMap
 }
 
-func (as AnalyzedString) GetFlagMap() *map[string]bool {
-	return &as.flagMap
+func (as *AnalyzedStringWithOriginalText) GetJson() ([]byte, error) {
+	return json.Marshal(as)
 }
 
-func constructAnalyzedString(
-	str *string,
-	flags ...struct {
-		key string
-		b   bool
-	}) AnalyzedString {
-
-	flagMap := make(map[string]bool)
-	for _, flag := range flags {
-		flagMap[flag.key] = flag.b
-	}
-	symbolMap, combinationMap := constructSymMap([]rune(*str))
-	return AnalyzedString{str, len(*str), symbolMap, combinationMap, flagMap}
+type AnalyzedStringWithCombinations struct {
+	*MinimalAnalyzedString
+	combinationMap map[[2]rune]uint
 }
 
-func constructSymMap(slice []rune) (map[rune]uint, map[[2]rune]uint) {
-	retOne := map[rune]uint{}
-	retTwo := map[[2]rune]uint{}
-	var previousSymbol rune
-	for i, symbol := range slice {
-		retOne[symbol]++
-		if i == 0 {
-			previousSymbol = symbol
-			continue
-		}
-		retTwo[[2]rune{previousSymbol, symbol}]++
-		previousSymbol = symbol
-	}
-	return retOne, retTwo
+func (as *AnalyzedStringWithCombinations) GetSize() int {
+	return as.sizeOfString
+}
+
+func (as *AnalyzedStringWithCombinations) GetSymbolMap() map[rune]uint {
+	return as.symbolMap
+}
+
+func (as *AnalyzedStringWithCombinations) GetJson() ([]byte, error) {
+	return json.Marshal(as)
+}
+
+type FullAnalyzedString struct {
+	*AnalyzedStringWithOriginalText
+	combinationMap map[[2]rune]uint
+}
+
+func (as FullAnalyzedString) GetSize() int {
+	return as.sizeOfString
+}
+
+func (as FullAnalyzedString) GetSymbolMap() map[rune]uint {
+	return as.symbolMap
+}
+
+func (as FullAnalyzedString) GetJson() ([]byte, error) {
+	return json.Marshal(as)
 }
