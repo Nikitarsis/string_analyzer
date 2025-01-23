@@ -25,7 +25,7 @@ func (sa StringAnalyzer) AnalyzeString(s *string) IAnalyzedString {
 	if !saveCombos && saveStrings {
 		return &stringsAS
 	}
-	return FullAnalyzedString{&stringsAS, combinationMap}
+	return &FullAnalyzedString{&stringsAS, combinationMap}
 }
 
 func constructSymMap(slice []rune) (map[rune]uint, map[[2]rune]uint) {

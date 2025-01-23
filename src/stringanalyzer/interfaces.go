@@ -1,7 +1,7 @@
 package stringanalyzer
 
 type ICanGetJSON interface {
-	GetJson() ([]byte, error)
+	GetJson() (*[]byte, error)
 }
 
 type IAnalyzedString interface {

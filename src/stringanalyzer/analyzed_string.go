@@ -18,8 +18,9 @@ func (mas *MinimalAnalyzedString) GetSymbolMap() map[rune]uint {
 	return mas.symbolMap
 }
 
-func (mas *MinimalAnalyzedString) GetJson() ([]byte, error) {
-	return json.Marshal(mas)
+func (mas *MinimalAnalyzedString) GetJson() (*[]byte, error) {
+	ret, err := json.Marshal(mas)
+	return &ret, err
 }
 
 type AnalyzedStringWithOriginalText struct {
@@ -35,8 +36,9 @@ func (as *AnalyzedStringWithOriginalText) GetSymbolMap() map[rune]uint {
 	return as.symbolMap
 }
 
-func (as *AnalyzedStringWithOriginalText) GetJson() ([]byte, error) {
-	return json.Marshal(as)
+func (as *AnalyzedStringWithOriginalText) GetJson() (*[]byte, error) {
+	ret, err := json.Marshal(as)
+	return &ret, err
 }
 
 type AnalyzedStringWithCombinations struct {
@@ -52,8 +54,9 @@ func (as *AnalyzedStringWithCombinations) GetSymbolMap() map[rune]uint {
 	return as.symbolMap
 }
 
-func (as *AnalyzedStringWithCombinations) GetJson() ([]byte, error) {
-	return json.Marshal(as)
+func (as *AnalyzedStringWithCombinations) GetJson() (*[]byte, error) {
+	ret, err := json.Marshal(as)
+	return &ret, err
 }
 
 type FullAnalyzedString struct {
@@ -69,6 +72,7 @@ func (as FullAnalyzedString) GetSymbolMap() map[rune]uint {
 	return as.symbolMap
 }
 
-func (as FullAnalyzedString) GetJson() ([]byte, error) {
-	return json.Marshal(as)
+func (as FullAnalyzedString) GetJson() (*[]byte, error) {
+	ret, err := json.Marshal(as)
+	return &ret, err
 }
