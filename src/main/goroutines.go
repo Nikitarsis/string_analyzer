@@ -9,9 +9,9 @@ import (
 
 func CyclicReading(
 	readFromStdIn bool,
-	out chan<- string,
-	warn func(s string),
-	log func(s string),
+	out chan<- *string,
+	warn func(string),
+	log func(string),
 	fileNames ...string,
 ) {
 	files := make([]*os.File, len(fileNames))
@@ -35,7 +35,7 @@ func CyclicReading(
 			warn(err.Error())
 			continue
 		}
-		out <- line
+		out <- &line
 	}
 	if !readFromStdIn {
 		log("Finished without STDIN")
@@ -52,14 +52,14 @@ func CyclicReading(
 			warn(err.Error())
 			continue
 		}
-		out <- line
+		out <- &line
 	}
 	log("Finished STDIN")
 }
 
 func CyclicWriting(
 	writeToPipeline bool,
-	out <-chan []byte,
+	out <-chan *[]byte,
 	warn func(s string),
 	log func(s string),
 	fileNames ...string,
@@ -81,15 +81,28 @@ func CyclicWriting(
 	for {
 		line := <-out
 		for _, writer := range writers {
-			nn, err := writer.Write(line)
+			nn, err := writer.Write(*line)
 			if err != nil {
 				warn(err.Error())
 				continue
 			}
-			if nn != len(line) {
+			if nn != len(*line) {
 				warn("Writing wasn't completed")
 				continue
 			}
+			writer.WriteByte('\n')
 		}
+	}
+}
+
+func loopRoutine(out chan<- *[]byte, in <-chan *string, warn func(string), function func(*string) (*[]byte, bool)) {
+	for {
+		str := <-in
+		ret, check := function(str)
+		if !check {
+			warn("String wasn't processed")
+			continue
+		}
+		out <- ret
 	}
 }
