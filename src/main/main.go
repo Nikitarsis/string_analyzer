@@ -19,8 +19,11 @@ func getParser() *args.ArgsParser {
 	builder.AddElementAtLeast(func(s ...string) { configSingleton.SetReadingFiles(s...) }, 1, "inputFile", false, "i")
 	builder.AddElementAtLeast(func(s ...string) { configSingleton.SetOutputFiles(s...) }, 1, "outputFile", false, "o")
 	builder.AddElementAtMost(func(s ...string) { configSingleton.SaveString() }, 0, "saveStrings", false, "s")
-	builder.AddElementAtMost(func(s ...string) { configSingleton.CountCombo() }, 0, "countCombinations", false, "c")
-	builder.AddElementAtMost(func(s ...string) { configSingleton.DoNotPipeline() }, 0, "nopipeline", false, "n")
+	builder.AddElementAtMost(func(s ...string) { configSingleton.CountCombo() }, 0, "countCombinations", false, "m")
+	builder.AddElementAtMost(func(s ...string) { configSingleton.TurnOffInputPipeline() }, 0, "noInPipeline", false, "I")
+	builder.AddElementAtMost(func(s ...string) { configSingleton.TurnOffOutputPipeline() }, 0, "noOutPipeline", false, "O")
+	builder.AddElimentSingle(configSingleton.SetNumOfGoroutines, 1, "numberGoroutines", false, "n")
+	builder.AddElimentSingle(configSingleton.SetSizeOfChan, 1, "chanSize", false, "c")
 	ret, err := builder.Construct()
 	if err != nil {
 		panic(err)
@@ -51,7 +54,7 @@ func main() {
 	parser := getParser()
 	parser.ParseArgs(os.Args...)
 	analyzer := getStringAnalyzer(configSingleton.ShouldSaveString(), configSingleton.ShouldCountCombo())
-	analyzeFunc := func(s *string) ([]byte, bool) {
+	analyzeFunc := func(s *string) (*[]byte, bool) {
 		ret, err := analyzer.AnalyzeString(s).GetJson()
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
@@ -59,6 +62,29 @@ func main() {
 		}
 		return ret, true
 	}
-	message := "Hello World"
-	fmt.Println(analyzeFunc(&message))
+	size := configSingleton.GetSizeOfChan()
+	numGo := configSingleton.GetNumOfGoroutines()
+	stringStream := make(chan *string, size)
+	byteStream := make(chan *[]byte, size)
+	go CyclicReading(
+		!configSingleton.ShouldStopInPipeline(),
+		stringStream, func(s string) {},
+		func(s string) {},
+		configSingleton.GetReadingFiles()...,
+	)
+	for i := 0; i < numGo; i++ {
+		go loopRoutine(
+			byteStream,
+			stringStream,
+			func(s string) {},
+			analyzeFunc,
+		)
+	}
+	go CyclicWriting(
+		!configSingleton.ShouldStopOutPipeline(),
+		byteStream,
+		func(s string) {},
+		func(s string) {},
+		configSingleton.GetOutputFiles()...,
+	)
 }
