@@ -1,15 +1,20 @@
 package main
 
+import "strconv"
+
 type Config struct {
-	shouldSaveString bool
-	shouldCountCombo bool
-	stopPipeline     bool
-	readingFiles     []string
-	outputFiles      []string
+	shouldSaveString   bool
+	shouldCountCombo   bool
+	stopInputPipeline  bool
+	stopOutputPipeline bool
+	readingFiles       []string
+	outputFiles        []string
+	sizeOfChan         int
+	numOfGoroutines    int
 }
 
 func GetConfig() Config {
-	return Config{false, false, false, make([]string, 0), make([]string, 0)}
+	return Config{false, false, false, false, make([]string, 0), make([]string, 0), 10000, 12}
 }
 
 func (c *Config) SaveString() {
@@ -20,8 +25,12 @@ func (c *Config) CountCombo() {
 	c.shouldCountCombo = true
 }
 
-func (c *Config) DoNotPipeline() {
+func (c *Config) TurnOffOutputPipeline() {
+	c.stopOutputPipeline = true
+}
 
+func (c *Config) TurnOffInputPipeline() {
+	c.stopInputPipeline = true
 }
 
 func (c *Config) SetReadingFiles(s ...string) {
@@ -40,8 +49,48 @@ func (c Config) ShouldCountCombo() bool {
 	return c.shouldCountCombo
 }
 
-func (c Config) ShouldStopPipeline() bool {
-	return c.stopPipeline
+func (c Config) ShouldStopInPipeline() bool {
+	return c.stopInputPipeline
+}
+
+func (c Config) ShouldStopOutPipeline() bool {
+	return c.stopOutputPipeline
+}
+
+func (c *Config) SetSizeOfChan(s ...string) {
+	if len(s) != 1 {
+		panic("Incorrect array")
+	}
+	ret, err := strconv.Atoi(s[0])
+	if err != nil {
+		panic(err.Error())
+	}
+	if ret < 0 {
+		panic("Size of chan cannot be negative")
+	}
+	c.sizeOfChan = ret
+}
+
+func (c *Config) SetNumOfGoroutines(s ...string) {
+	if len(s) != 1 {
+		panic("Incorrect array")
+	}
+	ret, err := strconv.Atoi(s[0])
+	if err != nil {
+		panic(err.Error())
+	}
+	if ret < 0 {
+		panic("Size of chan cannot be negative")
+	}
+	c.numOfGoroutines = ret
+}
+
+func (c Config) GetNumOfGoroutines() int {
+	return c.numOfGoroutines
+}
+
+func (c Config) GetSizeOfChan() int {
+	return c.sizeOfChan
 }
 
 func (c Config) GetReadingFiles() []string {
