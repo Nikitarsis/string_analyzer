@@ -1,5 +1,8 @@
 package args
 
+/*
+Entity combines name, pseudonyms, necessariness and callback functions
+*/
 type argEntity struct {
 	ArgName            string
 	AssociatedFunction func(...string)

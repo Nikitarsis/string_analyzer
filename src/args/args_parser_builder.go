@@ -4,14 +4,19 @@ import (
 	"slices"
 )
 
+/*
+Builder that creates Parser
+*/
 type ArgsParserBuilder struct {
 	entities []argEntity
 }
 
-func NewParserBuilder() ArgsParserBuilder {
+// Init builder
+func InitParserBuilder() ArgsParserBuilder {
 	return ArgsParserBuilder{}
 }
 
+// Add element with checking function
 func (apb *ArgsParserBuilder) AddElement(
 	function func(...string),
 	checker func(uint) bool,
@@ -24,6 +29,7 @@ func (apb *ArgsParserBuilder) AddElement(
 	return apb
 }
 
+// Add element with slice of possible number of arguments
 func (apb *ArgsParserBuilder) AddElementSlice(
 	function func(...string),
 	possibleArguments []uint,
@@ -37,6 +43,7 @@ func (apb *ArgsParserBuilder) AddElementSlice(
 	return apb.AddElement(function, checker, name, isNecessary, pseudonyms...)
 }
 
+// Add element with single possible number of arguments
 func (apb *ArgsParserBuilder) AddElimentSingle(
 	function func(...string),
 	argument uint,
@@ -50,6 +57,7 @@ func (apb *ArgsParserBuilder) AddElimentSingle(
 	return apb.AddElement(function, checker, name, isNecessary, pseudonyms...)
 }
 
+// Add element with minimum number of possible number of arguments
 func (apb *ArgsParserBuilder) AddElementAtLeast(
 	function func(...string),
 	minNumArguments uint,
@@ -63,6 +71,7 @@ func (apb *ArgsParserBuilder) AddElementAtLeast(
 	return apb.AddElement(function, checker, name, isNecessary, pseudonyms...)
 }
 
+// Add element with maximum number of possible number of arguments
 func (apb *ArgsParserBuilder) AddElementAtMost(
 	function func(...string),
 	maxNumArguments uint,
@@ -76,6 +85,7 @@ func (apb *ArgsParserBuilder) AddElementAtMost(
 	return apb.AddElement(function, checker, name, isNecessary, pseudonyms...)
 }
 
+// Add element with diapason of possible number of arguments
 func (apb *ArgsParserBuilder) AddElementBetween(
 	function func(...string),
 	minNumArguments uint,
@@ -90,6 +100,7 @@ func (apb *ArgsParserBuilder) AddElementBetween(
 	return apb.AddElement(function, checker, name, isNecessary, pseudonyms...)
 }
 
+// Creates Argument Parser
 func (apb ArgsParserBuilder) Construct() (*ArgsParser, error) {
 	return constructParser(apb.entities...)
 }
