@@ -1,10 +1,12 @@
 package stringanalyzer
 
+// String Analyzer is getting string and returning AnalyzedString
 type StringAnalyzer struct {
 	flags     map[string]bool
 	criteries map[string]func(*string) bool
 }
 
+// Main function of String Analyzer that returns AnalyzedString
 func (sa StringAnalyzer) AnalyzeString(s *string) IAnalyzedString {
 
 	checkMap := make(map[string]bool)
@@ -28,6 +30,7 @@ func (sa StringAnalyzer) AnalyzeString(s *string) IAnalyzedString {
 	return &FullAnalyzedString{&stringsAS, combinationMap}
 }
 
+// returns maps of symbols and combinations
 func constructSymMap(slice []rune) (map[rune]uint, map[[2]rune]uint) {
 	retOne := map[rune]uint{}
 	retTwo := map[[2]rune]uint{}
