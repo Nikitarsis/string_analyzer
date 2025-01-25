@@ -7,21 +7,21 @@ import (
 /*
 String with only symbol map and checklist
 */
-type MinimalAnalyzedString struct {
-	sizeOfString int
-	symbolMap    map[rune]uint
-	flagMap      map[string]bool
+type minimalAnalyzedString struct {
+	SizeOfString int
+	SymbolMap    map[rune]uint
+	FlagMap      map[string]bool
 }
 
-func (mas *MinimalAnalyzedString) GetSize() int {
-	return mas.sizeOfString
+func (mas *minimalAnalyzedString) GetSize() int {
+	return mas.SizeOfString
 }
 
-func (mas *MinimalAnalyzedString) GetSymbolMap() map[rune]uint {
-	return mas.symbolMap
+func (mas *minimalAnalyzedString) GetSymbolMap() map[rune]uint {
+	return mas.SymbolMap
 }
 
-func (mas *MinimalAnalyzedString) GetJson() (*[]byte, error) {
+func (mas *minimalAnalyzedString) GetJson() (*[]byte, error) {
 	ret, err := json.Marshal(mas)
 	return &ret, err
 }
@@ -29,20 +29,20 @@ func (mas *MinimalAnalyzedString) GetJson() (*[]byte, error) {
 /*
 Contains all from [[MinimalAnalyzedString]] and source string
 */
-type AnalyzedStringWithOriginalText struct {
-	*MinimalAnalyzedString
+type analyzedStringWithOriginalText struct {
+	*minimalAnalyzedString
 	innerString *string
 }
 
-func (as *AnalyzedStringWithOriginalText) GetSize() int {
-	return as.sizeOfString
+func (as *analyzedStringWithOriginalText) GetSize() int {
+	return as.SizeOfString
 }
 
-func (as *AnalyzedStringWithOriginalText) GetSymbolMap() map[rune]uint {
-	return as.symbolMap
+func (as *analyzedStringWithOriginalText) GetSymbolMap() map[rune]uint {
+	return as.SymbolMap
 }
 
-func (as *AnalyzedStringWithOriginalText) GetJson() (*[]byte, error) {
+func (as *analyzedStringWithOriginalText) GetJson() (*[]byte, error) {
 	ret, err := json.Marshal(as)
 	return &ret, err
 }
@@ -50,20 +50,20 @@ func (as *AnalyzedStringWithOriginalText) GetJson() (*[]byte, error) {
 /*
 Contains all from [[MinimalAnalyzedString]] plus combinationMap
 */
-type AnalyzedStringWithCombinations struct {
-	*MinimalAnalyzedString
-	combinationMap map[[2]rune]uint
+type analyzedStringWithCombinations struct {
+	*minimalAnalyzedString
+	CombinationMap map[string]uint
 }
 
-func (as *AnalyzedStringWithCombinations) GetSize() int {
-	return as.sizeOfString
+func (as *analyzedStringWithCombinations) GetSize() int {
+	return as.SizeOfString
 }
 
-func (as *AnalyzedStringWithCombinations) GetSymbolMap() map[rune]uint {
-	return as.symbolMap
+func (as *analyzedStringWithCombinations) GetSymbolMap() map[rune]uint {
+	return as.SymbolMap
 }
 
-func (as *AnalyzedStringWithCombinations) GetJson() (*[]byte, error) {
+func (as *analyzedStringWithCombinations) GetJson() (*[]byte, error) {
 	ret, err := json.Marshal(as)
 	return &ret, err
 }
@@ -71,20 +71,20 @@ func (as *AnalyzedStringWithCombinations) GetJson() (*[]byte, error) {
 /*
 Full Analyzed String with sorce string and combinations
 */
-type FullAnalyzedString struct {
-	*AnalyzedStringWithOriginalText
-	combinationMap map[[2]rune]uint
+type fullAnalyzedString struct {
+	*analyzedStringWithOriginalText
+	CombinationMap map[string]uint
 }
 
-func (as FullAnalyzedString) GetSize() int {
-	return as.sizeOfString
+func (as fullAnalyzedString) GetSize() int {
+	return as.SizeOfString
 }
 
-func (as FullAnalyzedString) GetSymbolMap() map[rune]uint {
-	return as.symbolMap
+func (as fullAnalyzedString) GetSymbolMap() map[rune]uint {
+	return as.SymbolMap
 }
 
-func (as FullAnalyzedString) GetJson() (*[]byte, error) {
+func (as fullAnalyzedString) GetJson() (*[]byte, error) {
 	ret, err := json.Marshal(as)
 	return &ret, err
 }

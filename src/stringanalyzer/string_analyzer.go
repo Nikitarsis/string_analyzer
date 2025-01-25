@@ -16,24 +16,24 @@ func (sa StringAnalyzer) AnalyzeString(s *string) IAnalyzedString {
 		checkMap[name] = function(s)
 	}
 	symbolMap, combinationMap := constructSymMap([]rune(*s))
-	minimalAS := MinimalAnalyzedString{len(*s), symbolMap, checkMap}
+	minimalAS := minimalAnalyzedString{len(*s), symbolMap, checkMap}
 	if !saveCombos && !saveStrings {
 		return &minimalAS
 	}
 	if saveCombos && !saveStrings {
-		return &AnalyzedStringWithCombinations{&minimalAS, combinationMap}
+		return &analyzedStringWithCombinations{&minimalAS, combinationMap}
 	}
-	stringsAS := AnalyzedStringWithOriginalText{&minimalAS, s}
+	stringsAS := analyzedStringWithOriginalText{&minimalAS, s}
 	if !saveCombos && saveStrings {
 		return &stringsAS
 	}
-	return &FullAnalyzedString{&stringsAS, combinationMap}
+	return &fullAnalyzedString{&stringsAS, combinationMap}
 }
 
 // returns maps of symbols and combinations
-func constructSymMap(slice []rune) (map[rune]uint, map[[2]rune]uint) {
+func constructSymMap(slice []rune) (map[rune]uint, map[string]uint) {
 	retOne := map[rune]uint{}
-	retTwo := map[[2]rune]uint{}
+	retTwo := map[string]uint{}
 	var previousSymbol rune
 	for i, symbol := range slice {
 		retOne[symbol]++
@@ -41,7 +41,7 @@ func constructSymMap(slice []rune) (map[rune]uint, map[[2]rune]uint) {
 			previousSymbol = symbol
 			continue
 		}
-		retTwo[[2]rune{previousSymbol, symbol}]++
+		retTwo[string([]rune{previousSymbol, symbol})]++
 		previousSymbol = symbol
 	}
 	return retOne, retTwo
