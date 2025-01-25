@@ -14,4 +14,5 @@ type IAnalyzedString interface {
 	ICanGetJSON
 	GetSize() int
 	GetSymbolMap() map[rune]uint
+	GetFlagMap() map[string]bool
 }

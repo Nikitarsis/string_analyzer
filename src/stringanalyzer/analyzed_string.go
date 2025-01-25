@@ -21,6 +21,10 @@ func (mas *minimalAnalyzedString) GetSymbolMap() map[rune]uint {
 	return mas.SymbolMap
 }
 
+func (mas *minimalAnalyzedString) GetFlagMap() map[string]bool {
+	return mas.FlagMap
+}
+
 func (mas *minimalAnalyzedString) GetJson() (*[]byte, error) {
 	ret, err := json.Marshal(mas)
 	return &ret, err
@@ -42,6 +46,10 @@ func (as *analyzedStringWithOriginalText) GetSymbolMap() map[rune]uint {
 	return as.SymbolMap
 }
 
+func (as *analyzedStringWithOriginalText) GetFlagMap() map[string]bool {
+	return as.FlagMap
+}
+
 func (as *analyzedStringWithOriginalText) GetJson() (*[]byte, error) {
 	ret, err := json.Marshal(as)
 	return &ret, err
@@ -61,6 +69,10 @@ func (as *analyzedStringWithCombinations) GetSize() int {
 
 func (as *analyzedStringWithCombinations) GetSymbolMap() map[rune]uint {
 	return as.SymbolMap
+}
+
+func (as *analyzedStringWithCombinations) GetFlagMap() map[string]bool {
+	return as.FlagMap
 }
 
 func (as *analyzedStringWithCombinations) GetJson() (*[]byte, error) {
