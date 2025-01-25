@@ -50,7 +50,7 @@ func (ap ArgsParser) checkEntity(entity argEntity) (bool, string) {
 // Checks and add new Entity to Parser
 func (ap *ArgsParser) addEntity(entity argEntity) error {
 	//if argument cannot be insert into Parser, error returns
-	if check, msg := ap.checkEntity(entity); check {
+	if check, msg := ap.checkEntity(entity); !check {
 		return errors.New("Entity collision due to: " + msg)
 	}
 
