@@ -15,7 +15,8 @@ func DivideArgs(args ...string) (map[string][]string, error) {
 	for _, arg := range args {
 		var check bool
 		//If argument has duble minus, argument is count as single key
-		if currentKey, check = strings.CutPrefix(arg, "--"); check {
+		if arg, check = strings.CutPrefix(arg, "--"); check {
+			currentKey = arg
 			//Checking incorrect key
 			if currentKey == "" {
 				return nil, errors.New("invalid argument key")
@@ -28,7 +29,8 @@ func DivideArgs(args ...string) (map[string][]string, error) {
 			continue
 		}
 		//If argument has single minus, every letter interpretes as key
-		if currentKey, check = strings.CutPrefix(arg, "-"); check {
+		if arg, check = strings.CutPrefix(arg, "-"); check {
+			currentKey = arg
 			keys := strings.Split(currentKey, "")
 			if len(keys) == 0 {
 				return nil, errors.New("invalid argument key")
