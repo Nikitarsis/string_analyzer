@@ -71,25 +71,25 @@ func (ap ArgsParser) Parse(argsMap map[string][]string) error {
 	for key, isNecessary := range ap.checklist {
 		_, check := argsMap[key]
 		if isNecessary && !check {
-			return fmt.Errorf("Should be key %s", key)
+			return fmt.Errorf("should be key %s", key)
 		}
 	}
 	for key, values := range argsMap {
 		pseudonym, check := ap.varnames[key]
 		if !check {
-			return fmt.Errorf("Key %s doesn't exist", key)
+			return fmt.Errorf("key %s doesn't exist", key)
 		}
 		checker, check := ap.possibleNArgsChecker[pseudonym]
 		if !check {
-			return fmt.Errorf("No checker for key %s", pseudonym)
+			return fmt.Errorf("no checker for key %s", pseudonym)
 		}
 		function, check := ap.functionMapper[pseudonym]
 		if !check {
-			return fmt.Errorf("No such function with name %s", pseudonym)
+			return fmt.Errorf("no such function with name %s", pseudonym)
 		}
 		size := uint(len(values))
 		if !checker(size) {
-			return fmt.Errorf("Incorrect number of arguments %s", key)
+			return fmt.Errorf("incorrect number of arguments %s", key)
 		}
 		function(values...)
 	}
