@@ -1,7 +1,6 @@
-package args_test
+package golang_args_test
 
 import (
-	"args"
 	"strings"
 	"testing"
 )

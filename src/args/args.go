@@ -1,4 +1,4 @@
-package args
+package golang_args
 
 import (
 	"errors"

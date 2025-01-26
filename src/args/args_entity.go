@@ -1,4 +1,4 @@
-package args
+package golang_args
 
 /*
 Entity combines name, pseudonyms, necessariness and callback functions
