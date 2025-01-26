@@ -3,6 +3,8 @@ package golang_args_test
 import (
 	"strings"
 	"testing"
+
+	"github.com/Nikitarsis/golang_args"
 )
 
 func getCallback(field *bool) func(...string) {
@@ -27,8 +29,8 @@ func getTestingArgMap() map[string][]string {
 	return ret
 }
 
-func getParser(callback []func(...string)) (*args.ArgsParser, error) {
-	builder := args.InitParserBuilder()
+func getParser(callback []func(...string)) (*golang_args.ArgsParser, error) {
+	builder := golang_args.InitParserBuilder()
 	builder.AddElement(callback[0], func(u uint) bool { return u > 0 }, "name", true)
 	builder.AddElement(callback[1], func(u uint) bool { return u > 2 }, "files", true)
 	builder.AddElement(callback[2], func(u uint) bool { return true }, "sTest", false, "s")
