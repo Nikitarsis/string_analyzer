@@ -1,14 +1,12 @@
-package string_analyzer_test
+package string_analyzer
 
 import (
 	"fmt"
 	"strings"
 	"testing"
-
-	stringanalyzer "github.com/Nikitarsis/string_analyzer"
 )
 
-func addDefaultCheckers(builder *stringanalyzer.StringAnalyzerBuilder) *stringanalyzer.StringAnalyzerBuilder {
+func addDefaultCheckers(builder *StringAnalyzerBuilder) *StringAnalyzerBuilder {
 	builder.AddChecker("not_null", func(s *string) bool { return *s != "" })
 	builder.AddChecker("e", func(s *string) bool { return strings.Contains(*s, "e") })
 	builder.AddChecker("Bruh", func(s *string) bool { return strings.HasPrefix(*s, "Bruh") })
@@ -17,7 +15,7 @@ func addDefaultCheckers(builder *stringanalyzer.StringAnalyzerBuilder) *stringan
 }
 
 func TestBasicFunctions(t *testing.T) {
-	builder := stringanalyzer.CreateSABuilder()
+	builder := CreateSABuilder()
 	addDefaultCheckers(&builder)
 	parser := builder.Construct()
 	str := "Bruh assfqageeeee"
@@ -48,7 +46,7 @@ func TestBasicFunctions(t *testing.T) {
 }
 
 func TestSerialization(t *testing.T) {
-	builder := stringanalyzer.CreateSABuilder()
+	builder := CreateSABuilder()
 	builder.AddChecker("is_big", func(s *string) bool { return len(*s) >= 250 })
 	builder.AddChecker("contains_God", func(s *string) bool { return strings.Contains(*s, "Бог") })
 	builder.AddChecker("is_small", func(s *string) bool { return len(*s) < 50 })
