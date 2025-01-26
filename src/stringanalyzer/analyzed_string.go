@@ -35,7 +35,7 @@ Contains all from [[MinimalAnalyzedString]] and source string
 */
 type analyzedStringWithOriginalText struct {
 	*minimalAnalyzedString
-	innerString *string
+	InnerString *string
 }
 
 func (as *analyzedStringWithOriginalText) GetSize() int {
