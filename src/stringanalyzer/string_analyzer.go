@@ -31,12 +31,12 @@ func (sa StringAnalyzer) AnalyzeString(s *string) IAnalyzedString {
 }
 
 // returns maps of symbols and combinations
-func constructSymMap(slice []rune) (map[rune]uint, map[string]uint) {
-	retOne := map[rune]uint{}
+func constructSymMap(slice []rune) (map[string]uint, map[string]uint) {
+	retOne := map[string]uint{}
 	retTwo := map[string]uint{}
 	var previousSymbol rune
 	for i, symbol := range slice {
-		retOne[symbol]++
+		retOne[string(symbol)]++
 		if i == 0 {
 			previousSymbol = symbol
 			continue

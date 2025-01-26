@@ -9,7 +9,7 @@ String with only symbol map and checklist
 */
 type minimalAnalyzedString struct {
 	SizeOfString int
-	SymbolMap    map[rune]uint
+	SymbolMap    map[string]uint
 	FlagMap      map[string]bool
 }
 
@@ -17,7 +17,7 @@ func (mas *minimalAnalyzedString) GetSize() int {
 	return mas.SizeOfString
 }
 
-func (mas *minimalAnalyzedString) GetSymbolMap() map[rune]uint {
+func (mas *minimalAnalyzedString) GetSymbolMap() map[string]uint {
 	return mas.SymbolMap
 }
 
@@ -42,7 +42,7 @@ func (as *analyzedStringWithOriginalText) GetSize() int {
 	return as.SizeOfString
 }
 
-func (as *analyzedStringWithOriginalText) GetSymbolMap() map[rune]uint {
+func (as *analyzedStringWithOriginalText) GetSymbolMap() map[string]uint {
 	return as.SymbolMap
 }
 
@@ -67,7 +67,7 @@ func (as *analyzedStringWithCombinations) GetSize() int {
 	return as.SizeOfString
 }
 
-func (as *analyzedStringWithCombinations) GetSymbolMap() map[rune]uint {
+func (as *analyzedStringWithCombinations) GetSymbolMap() map[string]uint {
 	return as.SymbolMap
 }
 
@@ -92,7 +92,7 @@ func (as fullAnalyzedString) GetSize() int {
 	return as.SizeOfString
 }
 
-func (as fullAnalyzedString) GetSymbolMap() map[rune]uint {
+func (as fullAnalyzedString) GetSymbolMap() map[string]uint {
 	return as.SymbolMap
 }
 

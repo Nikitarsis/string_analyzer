@@ -13,6 +13,6 @@ Analyzed String interface
 type IAnalyzedString interface {
 	ICanGetJSON
 	GetSize() int
-	GetSymbolMap() map[rune]uint
+	GetSymbolMap() map[string]uint
 	GetFlagMap() map[string]bool
 }
