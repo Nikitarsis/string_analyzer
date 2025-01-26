@@ -1,4 +1,4 @@
-package stringanalyzer
+package string_analyzer
 
 import "fmt"
 

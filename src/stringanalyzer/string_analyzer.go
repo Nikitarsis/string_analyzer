@@ -1,4 +1,4 @@
-package stringanalyzer
+package string_analyzer
 
 // String Analyzer is getting string and returning AnalyzedString
 type StringAnalyzer struct {

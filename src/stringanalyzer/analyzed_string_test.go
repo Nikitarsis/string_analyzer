@@ -1,4 +1,4 @@
-package stringanalyzer_test
+package string_analyzer_test
 
 import (
 	"fmt"
