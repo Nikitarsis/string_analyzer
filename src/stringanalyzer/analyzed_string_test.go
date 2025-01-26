@@ -2,9 +2,10 @@ package stringanalyzer_test
 
 import (
 	"fmt"
-	"stringanalyzer"
 	"strings"
 	"testing"
+
+	stringanalyzer "github.com/Nikitarsis/string_analyzer"
 )
 
 func addDefaultCheckers(builder *stringanalyzer.StringAnalyzerBuilder) *stringanalyzer.StringAnalyzerBuilder {
