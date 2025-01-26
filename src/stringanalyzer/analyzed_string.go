@@ -8,9 +8,9 @@ import (
 String with only symbol map and checklist
 */
 type minimalAnalyzedString struct {
-	SizeOfString int
-	SymbolMap    map[string]uint
-	FlagMap      map[string]bool
+	SizeOfString int             `json:"size_of_string"`
+	SymbolMap    map[string]uint `json:"symbol_map"`
+	FlagMap      map[string]bool `json:"flag_map"`
 }
 
 func (mas *minimalAnalyzedString) GetSize() int {
@@ -35,7 +35,7 @@ Contains all from [[MinimalAnalyzedString]] and source string
 */
 type analyzedStringWithOriginalText struct {
 	*minimalAnalyzedString
-	InnerString *string
+	InnerString *string `json:"inner_string"`
 }
 
 func (as *analyzedStringWithOriginalText) GetSize() int {
@@ -60,7 +60,7 @@ Contains all from [[MinimalAnalyzedString]] plus combinationMap
 */
 type analyzedStringWithCombinations struct {
 	*minimalAnalyzedString
-	CombinationMap map[string]uint
+	CombinationMap map[string]uint `json:"combination_map"`
 }
 
 func (as *analyzedStringWithCombinations) GetSize() int {
@@ -85,7 +85,7 @@ Full Analyzed String with sorce string and combinations
 */
 type fullAnalyzedString struct {
 	*analyzedStringWithOriginalText
-	CombinationMap map[string]uint
+	CombinationMap map[string]uint `json:"combination_map"`
 }
 
 func (as fullAnalyzedString) GetSize() int {
